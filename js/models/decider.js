@@ -4,9 +4,16 @@ var Decider = function(dealer){
 }
 
 Decider.prototype = {
-  viewEntireHand: function(player){
+  entireHand: function(player){
     return player.hand.concat(this.board)
+  },
+  determineWinner: function(player){
+
+  },
+  straight_flush: function(player){
+    console.log(true)
   }
+
 
 }
 
