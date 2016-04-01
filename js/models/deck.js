@@ -18,6 +18,6 @@ Deck.prototype = {
     this.shuffleDeck();
   },
   shuffleDeck: function(){
-
+    this.cards.shuffle()
   }
 }
