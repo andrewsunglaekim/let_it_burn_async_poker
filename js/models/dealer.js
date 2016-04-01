@@ -27,7 +27,7 @@ Dealer.prototype = {
     }
   },
   dealFlop: function(){
-    var NUM_CARDS_FOR_FLOP = 3
+    var NUM_CARDS_FOR_FLOP = 10
     var burnCard = this.burnCard()
     for(var i = 0; i < NUM_CARDS_FOR_FLOP; i++){
       this.dealCard()
