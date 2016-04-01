@@ -1,3 +1,4 @@
+var NUM_CARDS_FOR_FLUSH = 5
 var Decider = function(dealer){
   this.players = dealer.players;
   this.board = dealer.board;
@@ -29,11 +30,25 @@ Decider.prototype = {
 
   },
   isStraight: function(hand){
+    // order the hand
+    var orderedHand = _.sortBy(hand, function(card){ return RANK.indexOf(card.rank)})
 
+    // see if there are 5 in a row
+    console.log(orderedHand)
   },
   isFlush: function(hand){
-    var suitCounters = {
+
+    var suits = _.map(hand, function(card){
+      return card.suit
+    })
+    var mostSuit = suits.mode()
+    var numOfMostSuit = _.filter(hand, function(card){ return card.suit == mostSuit }).length
+    if(numOfMostSuit >= NUM_CARDS_FOR_FLUSH){
+      return true
+    } else{
+      return false
     }
+
     // of 7 5 has all of the same suit
 
   },

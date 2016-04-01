@@ -10,13 +10,10 @@ Dealer.prototype = {
   },
   newDeck: function(){
     this.deck = new Deck()
-    console.log(this.deck.cards.length)
   },
   dealCard: function(player){
-    console.log("being run")
     if(player){
       player.hand.push(this.deck.cards.shift())
-      console.log(player)
     }else{
       this.board.push(this.deck.cards.shift())
     }
