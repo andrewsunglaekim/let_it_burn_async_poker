@@ -1,4 +1,4 @@
-function Dealer(){
+var Dealer = function(){
   this.players = [];
   this.board = []
 }
@@ -10,26 +10,30 @@ Dealer.prototype = {
   },
   newDeck: function(){
     this.deck = new Deck()
+    console.log(this.deck.cards.length)
   },
   dealCard: function(player){
+    console.log("being run")
     if(player){
-      player.hand.push(this.deck.shift())
+      player.hand.push(this.deck.cards.shift())
+      console.log(player)
+    }else{
+      this.board.push(this.deck.cards.shift())
     }
-    this.board.push(this.deck.shift())
   },
   dealPocket: function(){
     var NUM_CARDS_FOR_POCKET = 2
-    for(var numCards = 0; i < NUM_CARDS_IN_POCKET; i++){
-      for(var i = 0; i < this.players.length; i++){
-        players.hand.push(this.deck.shift())
+    for(var numCards = 0; numCards < NUM_CARDS_FOR_POCKET; numCards++){
+      for(var playerIndex = 0; playerIndex < this.players.length; playerIndex++){
+        this.dealCard(this.players[playerIndex])
       }
     }
   },
   dealFlop: function(){
-    var NUM_CARDS_FOR_FLOP
+    var NUM_CARDS_FOR_FLOP = 3
     var burnCard = this.burnCard()
     for(var i = 0; i < NUM_CARDS_FOR_FLOP; i++){
-      this.board.push(this.deck.shift)
+      this.dealCard()
     }
   },
   dealTurn: function(){
@@ -39,9 +43,9 @@ Dealer.prototype = {
   dealRiver: function(){
     this.burnCard()
     this.dealCard()
-  }
+  },
   burnCard: function(){
-    var burnCard = this.deck.shift()
+    var burnCard = this.deck.cards.shift()
     return burnCard
   }
 }
