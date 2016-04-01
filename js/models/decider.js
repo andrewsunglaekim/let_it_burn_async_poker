@@ -30,7 +30,6 @@ Decider.prototype = {
 
   },
   isStraight: function(hand){
-    // order the hand
     var orderedHand = _.sortBy(hand, function(card){ return RANKS.indexOf(card.rank)})
     var straightHand = []
     straightHand.push(orderedHand[0])
@@ -39,12 +38,12 @@ Decider.prototype = {
       var cardRank = RANKS.indexOf(card.rank)
       var lastCardInStraightRank = RANKS.indexOf(straightHand[straightHand.length - 1].rank)
       var isCardOneHigher = cardRank - 1 == lastCardInStraightRank
-      // console.log(RANKS.indexOf(card.rank) - 1)
-      console.log(orderedHand[i].rank)
       if (!isCardOneHigher && straightHand.length < 5) {
         straightHand = []
+        straightHand.push(card)
+      } else if (isCardOneHigher) {
+        straightHand.push(card)
       }
-      straightHand.push(card)
       straightHand = _.uniq(straightHand, function(card){
         return card.rank
       })
