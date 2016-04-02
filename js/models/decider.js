@@ -1,4 +1,8 @@
 var NUM_CARDS_FOR_FLUSH = 5
+var NUM_CARDS_FOR_STRAIGHT = 5
+var NUM_CARDS_FOR_QUAD = 4
+var NUM_CARDS_FOR_TRIPS = 3
+var NUM_CARDS_FOR_PAIR = 2
 var Decider = function(dealer){
   this.players = dealer.players;
   this.board = dealer.board;
@@ -9,7 +13,7 @@ Decider.prototype = {
   entireHand: function(player){
     return player.hand.concat(this.board)
   },
-  determineWinner: function(player){
+  determineWinner: function(players){
 
     // if a player has straight flush move into winners array
     // if a there are players in the array
@@ -29,6 +33,37 @@ Decider.prototype = {
   },
   isStraightFlush: function(hand){
     var flushHand = this.isFlush(hand)
+    if (flushHand){
+      var straightHand = this.isStraight(flushHand)
+      if (straightHand) {
+        return straightHand
+      } else {
+        return false
+      }
+    } else {
+      return false
+    }
+  },
+  isFourOfAKind: function(hand){
+    var ranks = _.map(hand, function(card){ return card.rank })
+    var mostOfARank = ranks.mode()
+    if (mostOfARank >= NUM_CARDS_FOR_QUAD){
+      return hand
+    } else {
+      return false
+    }
+  },
+  isFlush: function(hand){
+    var suits = _.map(hand, function(card){ return card.suit })
+    var mostSuit = suits.mode()
+    var numOfMostSuit = _.filter(hand, function(card){ return card.suit == mostSuit }).length
+    var flushHand = _.filter(hand, function(card){ return card.suit == mostSuit })
+    var orderedFlushHand = _.sortBy(flushHand, function(card){ return card.rankValue()})
+    if(flushHand.length >= NUM_CARDS_FOR_FLUSH){
+      return orderedFlushHand
+    } else{
+      return false
+    }
   },
   isStraight: function(hand){
     var orderedHand = _.sortBy(hand, function(card){ return card.rankValue()})
@@ -56,17 +91,9 @@ Decider.prototype = {
         return card.rank
       })
     }
-    return straightHand
-  },
-  isFlush: function(hand){
-    var suits = _.map(hand, function(card){ return card.suit })
-    var mostSuit = suits.mode()
-    var numOfMostSuit = _.filter(hand, function(card){ return card.suit == mostSuit }).length
-    var flushHand = _.filter(hand, function(card){ return card.suit == mostSuit })
-    var orderedFlushHand = _.sortBy(flushHand, function(card){ return card.rankValue()})
-    if(flushHand.length >= NUM_CARDS_FOR_FLUSH){
-      return orderedFlushHand
-    } else{
+    if (straightHand.length >= NUM_CARDS_FOR_STRAIGHT){
+      return straightHand
+    } else {
       return false
     }
   },
