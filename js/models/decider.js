@@ -31,10 +31,10 @@ Decider.prototype = {
 
 
   },
-  isStraightFlush: function(hand){
-    var flushHand = this.isFlush(hand)
+  evalStraightFlush: function(hand){
+    var flushHand = this.evalFlush(hand)
     if (flushHand){
-      var straightHand = this.isStraight(flushHand)
+      var straightHand = this.evalStraight(flushHand)
       if (straightHand) {
         return straightHand
       } else {
@@ -44,16 +44,17 @@ Decider.prototype = {
       return false
     }
   },
-  isFourOfAKind: function(hand){
+  evalFourOfAKind: function(hand){
     var ranks = _.map(hand, function(card){ return card.rank })
-    var mostOfARank = ranks.mode()
-    if (mostOfARank >= NUM_CARDS_FOR_QUAD){
+    var mostOfRank = ranks.mode()
+    var numOfMostOfRank = _.filter(hand, function(card){ return card.rank == mostOfRank }).length
+    if (numOfMostOfRank == NUM_CARDS_FOR_QUAD){
       return hand
     } else {
       return false
     }
   },
-  isFlush: function(hand){
+  evalFlush: function(hand){
     var suits = _.map(hand, function(card){ return card.suit })
     var mostSuit = suits.mode()
     var numOfMostSuit = _.filter(hand, function(card){ return card.suit == mostSuit }).length
@@ -65,7 +66,7 @@ Decider.prototype = {
       return false
     }
   },
-  isStraight: function(hand){
+  evalStraight: function(hand){
     var orderedHand = _.sortBy(hand, function(card){ return card.rankValue()})
     var straightHand = []
     if(orderedHand[orderedHand.length - 1].rank == "A"){
@@ -97,10 +98,35 @@ Decider.prototype = {
       return false
     }
   },
+  evalThreeOfAKind: function(hand){
+    var ranks = _.map(hand, function(card){ return card.rank })
+    var mostOfRank = ranks.mode()
+    var trips = _.filter(hand, function(card){ return card.rank == mostOfRank })
+    var highCards = _.reject(hand, function(card){ return card.rank == mostOfRank })
+    var numOfMostOfRank = trips.length
+    if (numOfMostOfRank == NUM_CARDS_FOR_TRIPS){
+      return {
+        trips: trips,
+        highCards: highCards
+      }
+    } else {
+      return false
+    }
+  },
+  evalPair: function(originalHand){
+    var ranks = _.map(hand, function(card){ return card.rank })
+    var mostOfRank = ranks.mode()
+    var numOfMostOfRank = _.filter(hand, function(card){ return card.rank == mostOfRank }).length
+    if (numOfMostOfRank == NUM_CARDS_FOR_PAIR){
+      return hand
+    } else {
+      return false
+    }
+  },
   highCardValue: function(cards){
-    var highCard = 0;
+    var highCard = new Card("fake", "2");
     cards.forEach(function(card){
-      if(cards.indexOf(card) > highCard){
+      if(card.rankValue() > highCard.rankValue()){
         highCard = card
       }
     })
