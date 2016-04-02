@@ -6,7 +6,7 @@ var NUM_CARDS_FOR_PAIR = 2
 var Decider = function(dealer){
   this.players = dealer.players;
   this.board = dealer.board;
-  this.potentialWinner = [];
+  this.potentialWinners = [];
 }
 
 Decider.prototype = {
@@ -14,6 +14,21 @@ Decider.prototype = {
     return player.hand.concat(this.board)
   },
   determineWinner: function(players){
+    var i = 0;
+    var self = this
+    while(winner == false){
+      players.forEach(function(player){
+        var fullPlayerHand = self.entireHand(player)
+        if (self.evalStraightFlush(fullPlayerHand)){
+          this.addWinner(player)
+          break
+        } else if (self.evalFourOfAKind(fullPlayerHand)) {
+          this.potentialWinners.push(this.players.shift())
+          break
+        }
+      })
+      }
+    }
 
     // if a player has straight flush move into winners array
     // if a there are players in the array
@@ -114,7 +129,7 @@ Decider.prototype = {
     }
   },
   evalPair: function(originalHand){
-    var ranks = _.map(hand, function(card){ return card.rank })
+    var ranks = _.map(originalHand, function(card){ return card.rank })
     var mostOfRank = ranks.mode()
     var numOfMostOfRank = _.filter(hand, function(card){ return card.rank == mostOfRank }).length
     if (numOfMostOfRank == NUM_CARDS_FOR_PAIR){
@@ -131,6 +146,15 @@ Decider.prototype = {
       }
     })
     return highCard
+  },
+  isOneWinner: function(){
+    if(this.potentialWinners == 1){
+      var winner = this.potentialWinners
+      return winner
+    }
+  },
+  addWinner: function(){
+    this.potentialWinners.push(this.players.shift())
   }
 
 
