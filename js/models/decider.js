@@ -10,6 +10,7 @@ Decider.prototype = {
     return player.hand.concat(this.board)
   },
   determineWinner: function(player){
+
     // if a player has straight flush move into winners array
     // if a there are players in the array
       // 1 player, return the winner
@@ -27,45 +28,47 @@ Decider.prototype = {
 
   },
   isStraightFlush: function(hand){
-
+    var flushHand = this.isFlush(hand)
   },
   isStraight: function(hand){
-    var orderedHand = _.sortBy(hand, function(card){ return RANKS.indexOf(card.rank)})
+    var orderedHand = _.sortBy(hand, function(card){ return card.rankValue()})
     var straightHand = []
-    straightHand.push(orderedHand[0])
-    for(var i = 1; i < orderedHand.length; i++){
+    if(orderedHand[orderedHand.length - 1].rank == "A"){
+      straightHand.push(orderedHand[orderedHand.length - 1])
+    } else {
+      straightHand.push(orderedHand[0])
+    }
+    for(var i = 0; i < orderedHand.length; i++){
       var card = orderedHand[i]
-      var cardRank = RANKS.indexOf(card.rank)
-      var lastCardInStraightRank = RANKS.indexOf(straightHand[straightHand.length - 1].rank)
-      var isCardOneHigher = cardRank - 1 == lastCardInStraightRank
-      if (!isCardOneHigher && straightHand.length < 5) {
+      var cardRank = card.rankValue()
+      var lastCardInStraightRank = straightHand[straightHand.length - 1].rankValue()
+      var aceValue = 13
+      var isCardOneHigher = (cardRank - 1 == lastCardInStraightRank) || (cardRank - 1 == lastCardInStraightRank - aceValue)
+      if(cardRank == lastCardInStraightRank){}
+      else if (!isCardOneHigher && straightHand.length < 5) {
         straightHand = []
         straightHand.push(card)
-      } else if (isCardOneHigher) {
+      }
+      else if (isCardOneHigher) {
         straightHand.push(card)
       }
       straightHand = _.uniq(straightHand, function(card){
         return card.rank
       })
     }
-    // see if there are 5 in a row
-    console.log(_.map(straightHand, function(card){ return card.rank }))
+    return straightHand
   },
   isFlush: function(hand){
-
-    var suits = _.map(hand, function(card){
-      return card.suit
-    })
+    var suits = _.map(hand, function(card){ return card.suit })
     var mostSuit = suits.mode()
     var numOfMostSuit = _.filter(hand, function(card){ return card.suit == mostSuit }).length
-    if(numOfMostSuit >= NUM_CARDS_FOR_FLUSH){
-      return true
+    var flushHand = _.filter(hand, function(card){ return card.suit == mostSuit })
+    var orderedFlushHand = _.sortBy(flushHand, function(card){ return card.rankValue()})
+    if(flushHand.length >= NUM_CARDS_FOR_FLUSH){
+      return orderedFlushHand
     } else{
       return false
     }
-
-    // of 7 5 has all of the same suit
-
   },
   highCardValue: function(cards){
     var highCard = 0;
