@@ -1,65 +1,13 @@
-var NUM_CARDS_FOR_FLUSH = 5
-var NUM_CARDS_FOR_STRAIGHT = 5
-var NUM_CARDS_FOR_QUAD = 4
-var NUM_CARDS_FOR_TRIPS = 3
-var NUM_CARDS_FOR_PAIR = 2
-var Decider = function(dealer){
-  this.players = dealer.players;
-  this.board = dealer.board;
-  this.potentialWinners = {
-    winningHand: null,
-    players = []
-  };
+var Hand = function(cards){
+  this.cards = cards
 }
 
-Decider.prototype = {
-  entireHand: function(player){
-    return player.hand.concat(this.board)
+Hand.prototype = {
+  sortDescHand: function(){
+    return _.sortBy(this.cards, function(card){ return card.rankValue() }).reverse()
   },
-  sortDescHand: function(hand){
-    return _.sortBy(hand, function(card){ return card.rankValue() }).reverse()
-  },
-  sortAscHand: function(hand){
-    return _.sortBy(hand, function(card){ return card.rankValue() })
-  },
-  determineWinner: function(players){
-    var i = 0;
-    var self = this
-    while(winnersBracket == false){
-      players.forEach(function(player){
-        var fullPlayerHand = self.entireHand(player)
-        if (self.evalStraightFlush(fullPlayerHand)){
-          this.addWinner(player)
-          this.potentialWinners.winningHand = "sFlush"
-          return
-        } else if (self.evalQuads(fullPlayerHand)) {
-          this.addWinner(player)
-          this.potentialWinners.winningHand = "quad"
-          return
-        } else if (self.evalfullHouse(fullPlayerHand)) {
-          this.addWinner(player)
-          this.potentialWinners.winningHand = "fullHouse"
-          return
-        }
-        } else if (self.evalfullHouse(fullPlayerHand)) {
-          this.addWinner(player)
-          this.potentialWinners.winningHand = "fullHouse"
-          return
-        }
-        } else if (self.evalfullHouse(fullPlayerHand)) {
-          this.addWinner(player)
-          this.potentialWinners.winningHand = "fullHouse"
-          return
-        }
-        } else if (self.evalfullHouse(fullPlayerHand)) {
-          this.addWinner(player)
-          this.potentialWinners.winningHand = "fullHouse"
-          return
-        }
-      })
-    }
-
-
+  sortAscHand: function(){
+    return _.sortBy(this.cards, function(card){ return card.rankValue() })
   },
   evalStraightFlush: function(hand){
     var flushHand = this.evalFlush(hand)
@@ -191,31 +139,11 @@ Decider.prototype = {
   },
   highCard: function(cards){
     var highCard = new Card("fake", "2");
-    cards.forEach(function(card){
+    this.cards.forEach(function(card){
       if(card.rankValue() > highCard.rankValue()){
         highCard = card
       }
     })
     return highCard
-  },
-  isOneWinner: function(){
-    if(this.potentialWinners == 1){
-      var winner = this.potentialWinners
-      return winner
-    }
-  },
-  addWinner: function(player){
-    this.potentialWinners.players.push(player)
   }
-
-
 }
-
-// straight flush
-// 4-of-a-kind
-// full-house
-// flush
-// straight
-//trips
-//two-pair
-//
