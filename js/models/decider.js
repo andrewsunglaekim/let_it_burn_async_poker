@@ -6,12 +6,18 @@ var NUM_CARDS_FOR_PAIR = 2
 var Decider = function(dealer){
   this.players = dealer.players;
   this.board = dealer.board;
-  this.potentialWinners = [];
+  this.potentialWinners = {};
 }
 
 Decider.prototype = {
   entireHand: function(player){
     return player.hand.concat(this.board)
+  },
+  sortDescHand: function(hand){
+    return _.sortBy(hand, function(card){ return card.rankValue() }).reverse()
+  },
+  sortAscHand: function(hand){
+    return _.sortBy(hand, function(card){ return card.rankValue() })
   },
   determineWinner: function(players){
     var i = 0;
@@ -22,12 +28,12 @@ Decider.prototype = {
         if (self.evalStraightFlush(fullPlayerHand)){
           this.addWinner(player)
           break
-        } else if (self.evalFourOfAKind(fullPlayerHand)) {
+        } else if (self.evalQuads(fullPlayerHand)) {
           this.potentialWinners.push(this.players.shift())
-          break
+        } else if (self.evalfullHouse(fullPlayerHand)) {
+          this.potentialWinners.push(this.players.shift())
         }
       })
-      }
     }
 
     // if a player has straight flush move into winners array
@@ -59,12 +65,28 @@ Decider.prototype = {
       return false
     }
   },
-  evalFourOfAKind: function(hand){
+  evalQuads: function(hand){
     var ranks = _.map(hand, function(card){ return card.rank })
     var mostOfRank = ranks.mode()
     var numOfMostOfRank = _.filter(hand, function(card){ return card.rank == mostOfRank }).length
     if (numOfMostOfRank == NUM_CARDS_FOR_QUAD){
       return hand
+    } else {
+      return false
+    }
+  },
+  evalFullHouse: function(hand){
+    var trips = this.evalTrips(hand)
+    if( trips ){
+      var pair = this.evalPair(trips.highCards)
+      if (pair) {
+        return {
+          trips: trips.trips,
+          pair: pair.pair
+        }
+      } else {
+        return false
+      }
     } else {
       return false
     }
@@ -82,7 +104,7 @@ Decider.prototype = {
     }
   },
   evalStraight: function(hand){
-    var orderedHand = _.sortBy(hand, function(card){ return card.rankValue()})
+    var orderedHand = this.sortAscHand(hand)
     var straightHand = []
     if(orderedHand[orderedHand.length - 1].rank == "A"){
       straightHand.push(orderedHand[orderedHand.length - 1])
@@ -113,7 +135,7 @@ Decider.prototype = {
       return false
     }
   },
-  evalThreeOfAKind: function(hand){
+  evalTrips: function(hand){
     var ranks = _.map(hand, function(card){ return card.rank })
     var mostOfRank = ranks.mode()
     var trips = _.filter(hand, function(card){ return card.rank == mostOfRank })
@@ -128,17 +150,37 @@ Decider.prototype = {
       return false
     }
   },
-  evalPair: function(originalHand){
-    var ranks = _.map(originalHand, function(card){ return card.rank })
-    var mostOfRank = ranks.mode()
-    var numOfMostOfRank = _.filter(hand, function(card){ return card.rank == mostOfRank }).length
-    if (numOfMostOfRank == NUM_CARDS_FOR_PAIR){
-      return hand
-    } else {
-      return false
+  evalTwoPair: function(hand){
+    var orderedHand = this.sortDescHand(hand)
+    var highPair = this.evalPair(hand)
+    if (highPair){
+      var lowPair = this.evalPair(highPair.otherCards)
+      if (lowPair){
+        highCard = this.highCard(lowPair.otherCards)
+        return {
+          highPair: highPair.pair,
+          lowPair: lowPair.pair,
+          highCard: highCard
+        }
+      }
     }
+    return false
   },
-  highCardValue: function(cards){
+  evalPair: function(hand){
+    var ranks = _.map(hand, function(card){ return card.rank })
+    var mostOfRank = ranks.mode()
+    var pair = _.filter(hand, function(card){ return card.rank == mostOfRank })
+    var otherCards = _.reject(hand, function(card){ return card.rank == mostOfRank })
+    var numOfMostOfRank = pair.length
+    if (numOfMostOfRank == NUM_CARDS_FOR_PAIR){
+      return {
+        pair: pair,
+        otherCards: otherCards
+      }
+    }
+    return false
+  },
+  highCard: function(cards){
     var highCard = new Card("fake", "2");
     cards.forEach(function(card){
       if(card.rankValue() > highCard.rankValue()){
@@ -153,8 +195,8 @@ Decider.prototype = {
       return winner
     }
   },
-  addWinner: function(){
-    this.potentialWinners.push(this.players.shift())
+  addWinner: function(player){
+    this.potentialWinners.push(player)
   }
 
 
