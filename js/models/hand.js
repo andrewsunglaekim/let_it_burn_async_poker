@@ -2,7 +2,27 @@ var Hand = function(cards){
   this.cards = cards
 }
 
+Hand = {
+  evalStraightFlush: function(hand){
+    var flushHand = this.evalFlush(hand)
+    if (flushHand){
+      var straightHand = this.evalStraight(flushHand)
+      if (straightHand) {
+        return straightHand
+      } else {
+        return false
+      }
+    } else {
+      return false
+    }
+  }
+}
+
 Hand.prototype = {
+  highHand: function(){
+
+    // returns best 5 card hand in the format to break tie
+  },
   sortDescHand: function(){
     return _.sortBy(this.cards, function(card){ return card.rankValue() }).reverse()
   },
