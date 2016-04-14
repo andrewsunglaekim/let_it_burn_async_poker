@@ -4,7 +4,7 @@ var NUM_CARDS_FOR_QUAD = 4
 var NUM_CARDS_FOR_TRIPS = 3
 var NUM_CARDS_FOR_PAIR = 2
 var Decider = function(hand){
-  this.sortAscHand(hand)
+  this.hand = this.sortAscHand(hand)
   this.bestHand = this.evalHand()
 }
 
@@ -185,6 +185,6 @@ Decider.prototype = {
     return _.sortBy(this.hand, function(card){ return card.rankValue() }).reverse()
   },
   sortAscHand: function(hand){
-    this.hand = _.sortBy(hand, function(card){ return card.rankValue() })
+    return _.sortBy(hand, function(card){ return card.rankValue() })
   }
 }
