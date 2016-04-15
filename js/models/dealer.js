@@ -4,8 +4,7 @@ var Dealer = function(){
 }
 
 Dealer.prototype = {
-  addPlayer: function(name, chips){
-    var player = new Player(name, chips)
+  addPlayer: function(player){
     this.players.push(player)
   },
   newDeck: function(){
@@ -27,7 +26,7 @@ Dealer.prototype = {
     }
   },
   dealFlop: function(){
-    var NUM_CARDS_FOR_FLOP = 10
+    var NUM_CARDS_FOR_FLOP = 3
     var burnCard = this.burnCard()
     for(var i = 0; i < NUM_CARDS_FOR_FLOP; i++){
       this.dealCard()

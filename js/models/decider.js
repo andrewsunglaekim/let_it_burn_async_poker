@@ -3,9 +3,14 @@ var NUM_CARDS_FOR_STRAIGHT = 5
 var NUM_CARDS_FOR_QUAD = 4
 var NUM_CARDS_FOR_TRIPS = 3
 var NUM_CARDS_FOR_PAIR = 2
-var Decider = function(hand){
-  this.hand = this.sortAscHand(hand)
-  this.bestHand = this.evalHand()
+var HAND_RANKS = ["pair", "two pair", "trips", "straight", "flush", "full house", "quads", "straight flush"]
+var Decider = function(player, board){
+  if (player && board){
+    this.player = player
+    this.board = board
+    this.hand = this.sortAscHand(this.player.hand.concat(this.board))
+    this.bestHand = this.evalHand()
+  } else {}
 }
 
 Decider.prototype = {
@@ -34,7 +39,7 @@ Decider.prototype = {
     if (flushHand){
       var straightHand = this.evalStraight(flushHand)
       if (straightHand) {
-        this.handType = "Straight Flush"
+        this.handType = "straight flush"
         return straightHand
       } else {
         return false
@@ -49,7 +54,7 @@ Decider.prototype = {
     var mostOfCards = _.filter(hand, function(card){ return card.rank == mostOfRank })
     var kicker = this.highCard(_.reject(hand, function(card){ return card.rank == mostOfRank }))
     if (mostOfCards.length == NUM_CARDS_FOR_QUAD){
-      this.handType = "Quads"
+      this.handType = "quads"
       return {
         quads: mostOfRank,
         kicker: kicker
@@ -63,7 +68,7 @@ Decider.prototype = {
     if( trips ){
       var pair = this.evalPair(trips.highCards)
       if (pair) {
-        this.handType = "Full House"
+        this.handType = "full house"
         return {
           trips: trips.trips,
           pair: pair.pair
@@ -113,7 +118,7 @@ Decider.prototype = {
       })
     }
     if (straightHand.length >= NUM_CARDS_FOR_STRAIGHT){
-      this.handType = "Straight"
+      this.handType = "straight"
       return straightHand
     } else {
       return false
@@ -126,7 +131,7 @@ Decider.prototype = {
     var highCards = _.reject(hand, function(card){ return card.rank == mostOfRank })
     var numOfMostOfRank = trips.length
     if (numOfMostOfRank == NUM_CARDS_FOR_TRIPS){
-      this.handType = "Trips"
+      this.handType = "trips"
       return {
         trips: trips,
         highCards: highCards
@@ -142,7 +147,7 @@ Decider.prototype = {
       var lowPair = this.evalPair(highPair.otherCards)
       if (lowPair){
         highCard = this.highCard(lowPair.otherCards)
-        this.handType = "Two Pair"
+        this.handType = "two pair"
         return {
           highPair: highPair.pair,
           lowPair: lowPair.pair,
@@ -159,7 +164,7 @@ Decider.prototype = {
     var otherCards = _.reject(hand, function(card){ return card.rank == mostOfRank })
     var numOfMostOfRank = pair.length
     if (numOfMostOfRank == NUM_CARDS_FOR_PAIR){
-      this.handType = "Pair"
+      this.handType = "pair"
       return {
         pair: pair,
         otherCards: otherCards
@@ -168,7 +173,7 @@ Decider.prototype = {
     return false
   },
   evalHighestFive: function(hand){
-    this.handType = "High Card"
+    this.handType = "high card"
     bestFive = hand.slice(Math.max(hand.length - 5, 1))
     return bestFive
   },
