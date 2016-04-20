@@ -4,7 +4,8 @@ var TieBreaker = function(deciders){
   this.judge = new Decider()
   this.deciders = deciders
   this.removeLesserHands()
-  this.winners = this.getWinner()
+  this.winners = []
+  this.firstCase = this.deciders[0]
 }
 
 TieBreaker.prototype = {
@@ -17,34 +18,56 @@ TieBreaker.prototype = {
   },
   getWinner: function(){
     if(this.deciders.length == 1){
-      this.winner = this.deciders[0]
+      this.winners = this.firstCase
       return this.deciders[0]
     } else {
-      return this.breakTie(this.deciders[0].handType)
+      this.winners = this.breakTie(this.deciders[0].handType)
     }
 
   },
   breakTie: function(handType){
-    if(handType == "straight flush"){ return this.breakHighHand() }
-    else if(handType == "quads") { return this.breakHighHand() }
+    if(handType == "straight flush"){ return this.breakHighHand(this.deciders) }
+    else if(handType == "quads") { return this.breakQuads() }
+    else if(handType == "full house") { return this.breakQuads() }
 
   },
-  breakHighHand: function(){
-    var bestDecider = this.deciders[0]
-    var winners = []
-    _.each(this.deciders, function(decider){
+  breakHighHand: function(deciders){
+    var self = this
+    var bestDecider = deciders[0]
+    _.each(deciders, function(decider){
       if (decider.score() == bestDecider.score()){
-        winners.push(decider)
+        self.winners.push(decider)
       } else if (decider.score() > bestDecider.score()) {
-        winners = []
-        winners.push(decider)
+        self.winners = []
+        self.winners.push(decider)
         bestDecider = decider
       }
     })
-    return winners
+    return self.winners
+  },
+  breakQuads: function(){
+    var bestDeciderRank = this.deciders[0].bestHand.quads[0].rankValue()
+    console.log(bestDeciderRank)
+    var sameQuads = []
+    _.each(this.deciders, function(decider){
+      if (decider.bestHand.quads[0].rankValue() == bestDeciderRank){
+        sameQuads.push(decider)
+      } else if (decider.bestHand.quads[0].rankValue() > bestDeciderRank){
+        sameQuads = []
+        sameQuads.push(decider)
+        bestDeciderRank = decider.bestHand.quads[0].rankValue()
+      }
+    })
+    return this.breakHighHand(sameQuads)
   },
   breakFullHouse: function(){
-
+    highestTrip = _.max(this.deciders, function(decider){
+      return decider.bestHand.trips[0].rankValue()
+    }).bestHand.trips[0].rankValue()
+    sameOfHighest = _.select(this.deciders, function(decider){
+      return decider.bestHand.trips[0].rankValue() == highestTrip
+    })
+    console.log(sameOfHighest))
   }
   // var array1 = [4,8,9,10];
   // var array2 = [4,8,9,10];

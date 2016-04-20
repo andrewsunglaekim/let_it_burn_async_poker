@@ -57,7 +57,7 @@ Decider.prototype = {
     if (mostOfCards.length == NUM_CARDS_FOR_QUAD){
       this.handType = "quads"
       return {
-        quads: mostOfRank,
+        quads: mostOfCards,
         kickers: [kicker]
       }
     } else {

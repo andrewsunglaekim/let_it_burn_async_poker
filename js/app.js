@@ -11,17 +11,17 @@ $(document).ready(function(){
   boardCard  = new Card("spades", "J")
   boardCard1 = new Card("spades", "J")
   boardCard2 = new Card("spades", "J")
-  boardCard3 = new Card("spades", "10")
-  boardCard4 = new Card("clubs", "6")
+  boardCard3 = new Card("spades", "7")
+  boardCard4 = new Card("clubs", "8")
   dealer.board = [boardCard, boardCard1, boardCard2, boardCard3, boardCard4]
   bobCard = new Card("spades", "J")
-  bobCard1 = new Card("spades", "5")
+  bobCard1 = new Card("spades", "10")
   bob.hand = [bobCard, bobCard1]
-  tomCard = new Card("spades", "J")
+  tomCard = new Card("spades", "5")
   tomCard1 = new Card("spades", "10")
   tom.hand = [tomCard, tomCard1]
-  susyCard = new Card("spades", "3")
-  susyCard1 = new Card("hearts", "5")
+  susyCard = new Card("spades", "J")
+  susyCard1 = new Card("hearts", "4")
   susy.hand = [susyCard, susyCard1]
   // dealer.dealFlop()
   // dealer.dealTurn()
