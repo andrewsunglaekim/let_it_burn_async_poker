@@ -4,7 +4,7 @@ var TieBreaker = function(deciders){
   this.judge = new Decider()
   this.deciders = deciders
   this.removeLesserHands()
-  this.getWinner()
+  this.winners = this.getWinner()
 }
 
 TieBreaker.prototype = {
@@ -20,27 +20,31 @@ TieBreaker.prototype = {
       this.winner = this.deciders[0]
       return this.deciders[0]
     } else {
-      this.breakTie(this.deciders[0].handType)
+      return this.breakTie(this.deciders[0].handType)
     }
 
   },
   breakTie: function(handType){
-    if(handType == "straight flush"){ return this.breakStraightFlush()}
-  },
-  breakStraightFlush: function(){
-
-    // loop through all deciders - each decider
-      // loop through all decdiers
-        // compare last element
-      // loop through all cards and compare with next decider
-      //
+    if(handType == "straight flush"){ return this.breakHighHand() }
+    else if(handType == "quads") { return this.breakHighHand() }
 
   },
   breakHighHand: function(){
-    var bestHighDecider = this.deciders[0]
+    var bestDecider = this.deciders[0]
+    var winners = []
     _.each(this.deciders, function(decider){
-
+      if (decider.score() == bestDecider.score()){
+        winners.push(decider)
+      } else if (decider.score() > bestDecider.score()) {
+        winners = []
+        winners.push(decider)
+        bestDecider = decider
+      }
     })
+    return winners
+  },
+  breakFullHouse: function(){
+
   }
   // var array1 = [4,8,9,10];
   // var array2 = [4,8,9,10];

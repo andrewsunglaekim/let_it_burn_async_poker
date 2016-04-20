@@ -29,3 +29,7 @@ Array.prototype.mode = function(){
   }
   return maxEl;
 }
+
+Array.prototype.multiMax = function(){
+  
+}
