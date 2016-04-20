@@ -10,12 +10,12 @@ $(document).ready(function(){
   // dealer.dealPocket()
   boardCard  = new Card("spades", "5")
   boardCard1 = new Card("spades", "10")
-  boardCard2 = new Card("spades", "K")
+  boardCard2 = new Card("spades", "4")
   boardCard3 = new Card("spades", "9")
   boardCard4 = new Card("spades", "J")
   dealer.board = [boardCard, boardCard1, boardCard2, boardCard3, boardCard4]
   bobCard = new Card("spades", "Q")
-  bobCard1 = new Card("hearts", "A")
+  bobCard1 = new Card("spades", "2")
   bob.hand = [bobCard, bobCard1]
   tomCard = new Card("spades", "7")
   tomCard1 = new Card("hearts", "6")

@@ -28,15 +28,16 @@ TieBreaker.prototype = {
     if(handType == "straight flush"){ return this.breakStraightFlush()}
   },
   breakStraightFlush: function(){
-    for(var i = 0; i < this.deciders.length; i++){
 
-    }
-    // loop through all deciders
-      // get the top 5 cards
+    // loop through all deciders - each decider
+      // loop through all decdiers
+        // compare last element
+      // loop through all cards and compare with next decider
       //
 
   },
-  breakHighHand: function(hands){
+  breakHighHand: function(){
+    var bestHighDecider = this.deciders[0]
     _.each(this.deciders, function(decider){
 
     })

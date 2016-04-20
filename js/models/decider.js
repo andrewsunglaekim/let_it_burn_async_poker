@@ -14,6 +14,7 @@ var Decider = function(player, board){
 }
 
 Decider.prototype = {
+  // put all evaluations into array, reject nils
   evalHand: function(){
     var straightFlush = this.evalStraightFlush(this.hand)
     if (straightFlush){ return straightFlush}
@@ -37,10 +38,12 @@ Decider.prototype = {
   evalStraightFlush: function(hand){
     var flushHand = this.evalFlush(hand)
     if (flushHand){
-      var straightHand = this.evalStraight(flushHand)
+      var straightHand = this.evalStraight(flushHand.kickers)
       if (straightHand) {
         this.handType = "straight flush"
-        return straightHand
+        return {
+          kickers: straightHand
+        }
       } else {
         return false
       }
@@ -57,7 +60,7 @@ Decider.prototype = {
       this.handType = "quads"
       return {
         quads: mostOfRank,
-        kicker: kicker
+        kickers: [kicker]
       }
     } else {
       return false
@@ -66,7 +69,7 @@ Decider.prototype = {
   evalFullHouse: function(hand){
     var trips = this.evalTrips(hand)
     if( trips ){
-      var pair = this.evalPair(trips.highCards)
+      var pair = this.evalPair(trips.kickers)
       if (pair) {
         this.handType = "full house"
         return {
@@ -87,7 +90,9 @@ Decider.prototype = {
     var flushHand = _.filter(this.hand, function(card){ return card.suit == mostSuit })
     if(flushHand.length >= NUM_CARDS_FOR_FLUSH){
       this.handType = "flush"
-      return flushHand
+      return {
+        kickers: flushHand.slice(-5)
+      }
     } else{
       return false
     }
@@ -119,7 +124,9 @@ Decider.prototype = {
     }
     if (straightHand.length >= NUM_CARDS_FOR_STRAIGHT){
       this.handType = "straight"
-      return straightHand
+      return {
+        kickers:straightHand.slice(-5)
+      }
     } else {
       return false
     }
@@ -134,7 +141,7 @@ Decider.prototype = {
       this.handType = "trips"
       return {
         trips: trips,
-        highCards: highCards
+        kickers: highCards
       }
     } else {
       return false
@@ -151,7 +158,7 @@ Decider.prototype = {
         return {
           highPair: highPair.pair,
           lowPair: lowPair.pair,
-          highCard: highCard
+          kickers: [highCard]
         }
       }
     }
@@ -187,9 +194,16 @@ Decider.prototype = {
     return highCard
   },
   sortDescHand: function(hand){
-    return _.sortBy(this.hand, function(card){ return card.rankValue() }).reverse()
+    return _.sortBy(hand, function(card){ return card.rankValue() }).reverse()
   },
   sortAscHand: function(hand){
     return _.sortBy(hand, function(card){ return card.rankValue() })
+  },
+  score: function(){
+    kickers = this.sortDescHand(this.bestHand.kickers)
+    kickers = _.map(kickers, function(card){ return card.rankValue().toString() })
+    kickerString = kickers.join("")
+    score = parseInt(kickerString)
+    return score
   }
 }
