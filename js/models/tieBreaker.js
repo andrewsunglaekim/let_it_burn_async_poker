@@ -1,8 +1,10 @@
 var HAND_RANKS = ["pair", "two pair", "trips", "straight", "flush", "full house", "quads", "straight flush"]
+var BEST_HAND = 5
 var TieBreaker = function(deciders){
   this.judge = new Decider()
   this.deciders = deciders
   this.removeLesserHands()
+  this.getWinner()
 }
 
 TieBreaker.prototype = {
@@ -18,9 +20,32 @@ TieBreaker.prototype = {
       this.winner = this.deciders[0]
       return this.deciders[0]
     } else {
-      if(this.deciders[0].handType == "straight flush" ){
-
-      }
+      this.breakTie(this.deciders[0].handType)
     }
+
+  },
+  breakTie: function(handType){
+    if(handType == "straight flush"){ return this.breakStraightFlush()}
+  },
+  breakStraightFlush: function(){
+    for(var i = 0; i < this.deciders.length; i++){
+
+    }
+    // loop through all deciders
+      // get the top 5 cards
+      //
+
+  },
+  breakHighHand: function(hands){
+    _.each(this.deciders, function(decider){
+
+    })
   }
+  // var array1 = [4,8,9,10];
+  // var array2 = [4,8,9,10];
+  //
+  // var is_same = (array1.length == array2.length) && array1.every(function(element, index) {
+  //     return element === array2[index];
+  // });
+
 }
