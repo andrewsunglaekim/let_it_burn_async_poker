@@ -3,7 +3,6 @@ var NUM_CARDS_FOR_STRAIGHT = 5
 var NUM_CARDS_FOR_QUAD = 4
 var NUM_CARDS_FOR_TRIPS = 3
 var NUM_CARDS_FOR_PAIR = 2
-var HAND_RANKS = ["pair", "two pair", "trips", "straight", "flush", "full house", "quads", "straight flush"]
 var Decider = function(player, board){
   if (player && board){
     this.player = player
@@ -65,7 +64,8 @@ Decider.prototype = {
     }
   },
   evalFullHouse: function(hand){
-    var trips = this.evalTrips(hand)
+    orderedHand = this.sortDescHand(hand)
+    var trips = this.evalTrips(orderedHand)
     if( trips ){
       var pair = this.evalPair(trips.kickers)
       if (pair) {
@@ -89,7 +89,7 @@ Decider.prototype = {
     if(flushHand.length >= NUM_CARDS_FOR_FLUSH){
       this.handType = "flush"
       return {
-        kickers: flushHand.slice(-5)
+        kickers: flushHand
       }
     } else{
       return false
@@ -139,7 +139,7 @@ Decider.prototype = {
       this.handType = "trips"
       return {
         trips: trips,
-        kickers: highCards.slice(-2)
+        kickers: highCards
       }
     } else {
       return false
@@ -168,7 +168,10 @@ Decider.prototype = {
     var pair = _.filter(hand, function(card){ return card.rank == mostOfRank })
     var kickers = _.reject(hand, function(card){ return card.rank == mostOfRank })
     var numOfMostOfRank = pair.length
-    if (numOfMostOfRank == NUM_CARDS_FOR_PAIR){
+    if (numOfMostOfRank >= NUM_CARDS_FOR_PAIR){
+      if(numOfMostOfRank > NUM_CARDS_FOR_PAIR){
+        kickers.push(pair.shift())
+      }
       this.handType = "pair"
       return {
         pair: pair,
@@ -197,11 +200,15 @@ Decider.prototype = {
   sortAscHand: function(hand){
     return _.sortBy(hand, function(card){ return card.rankValue() })
   },
-  score: function(){
-    kickers = this.sortDescHand(this.bestHand.kickers)
-    kickers = _.map(kickers, function(card){ return card.rankValue().toString() })
+  score: function(hand){
+    if(this.evalStraight(hand) && hand[0].rank == "A"){
+      return 0
+    }
+    kickers = this.sortDescHand(hand)
+    kickers = _.map(hand, function(card){ return card.rankValue().toString() })
     kickerString = kickers.join("")
     score = parseInt(kickerString)
+    console.log(score)
     return score
   }
 }
