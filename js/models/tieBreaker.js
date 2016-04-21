@@ -33,6 +33,7 @@ TieBreaker.prototype = {
     else if(handType == "trips") { return this.breakTrips(this.deciders) }
     else if(handType == "two pair") { return this.breakTrips(this.deciders) }
     else if(handType == "pair") { return this.breakTrips(this.deciders) }
+    else if(handType == "high card") { return this.breakTrips(this.deciders) }
   },
   breakHighHand: function(deciders){
     console.log(deciders)
@@ -86,7 +87,33 @@ TieBreaker.prototype = {
     sameOfHighest = _.select(this.deciders, function(decider){
       return decider.bestHand.trips[0].rankValue() == highestTrip
     })
+    _.each(sameOfHighest, function(decider){
+      console.log(decider)
+      decider.bestHand.kickers = decider.bestHand.kickers.slice(-2)
+    })
     return this.breakHighHand(sameOfHighest)
+  },
+  breakTwoPair: function(){
+    highestPair = _.max(this.deciders, function(decider){
+      return decider.bestHand.highPair[0].rankValue()
+    }).bestHand.highPair[0].rankValue()
+    sameOfHighest = _.select(this.deciders, function(decider){
+      return decider.bestHand.highPair[0].rankValue() == highestPair
+    })
+    if(sameOfHighest.length > 1){
+      highestLowPair = _.max(sameOfHighest, function(decider){
+        return decider.bestHand.lowPair[0].rankValue()
+      }).bestHand.lowPair[0].rankValue()
+      sameOfHighestLowPair = _.select(sameOfHighest, function(decider){
+        return decider.bestHand.lowPair[0].rankValue() == highestLowPair
+      })
+      return this.breakHighHand(sameOfHighestLowPair)
+    } else{
+      return [sameOfHighest]
+    }
+  },
+  breakPair: function(){
+
   }
 
 }

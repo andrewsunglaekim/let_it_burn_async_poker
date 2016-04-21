@@ -5,6 +5,6 @@ var Card = function(suit, rank){
 
 Card.prototype = {
   rankValue: function(){
-    return RANKS.indexOf(this.rank)
+    return RANKS.indexOf(this.rank) + 1
   }
 }

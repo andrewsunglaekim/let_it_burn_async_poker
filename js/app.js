@@ -9,18 +9,18 @@ $(document).ready(function(){
   // dealer.newDeck()
   // dealer.dealPocket()
   boardCard  = new Card("spades", "10")
-  boardCard1 = new Card("clubs", "3")
-  boardCard2 = new Card("spades", "4")
+  boardCard1 = new Card("clubs", "J")
+  boardCard2 = new Card("spades", "5")
   boardCard3 = new Card("diamonds", "6")
   boardCard4 = new Card("spades", "10")
   dealer.board = [boardCard, boardCard1, boardCard2, boardCard3, boardCard4]
-  bobCard = new Card("spades", "5")
-  bobCard1 = new Card("diamonds", "2")
+  bobCard = new Card("spades", "10")
+  bobCard1 = new Card("diamonds", "A")
   bob.hand = [bobCard, bobCard1]
-  tomCard = new Card("hearts", "J")
+  tomCard = new Card("hearts", "10")
   tomCard1 = new Card("spades", "Q")
   tom.hand = [tomCard, tomCard1]
-  susyCard = new Card("spades", "7")
+  susyCard = new Card("spades", "4")
   susyCard1 = new Card("hearts", "5")
   susy.hand = [susyCard, susyCard1]
   // dealer.dealFlop()
