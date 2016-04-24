@@ -8,20 +8,20 @@ $(document).ready(function(){
   dealer.addPlayer(susy)
   // dealer.newDeck()
   // dealer.dealPocket()
-  boardCard  = new Card("spades", "10")
-  boardCard1 = new Card("clubs", "J")
-  boardCard2 = new Card("spades", "5")
-  boardCard3 = new Card("diamonds", "6")
+  boardCard  = new Card("spades", "J")
+  boardCard1 = new Card("clubs", "9")
+  boardCard2 = new Card("spades", "Q")
+  boardCard3 = new Card("diamonds", "2")
   boardCard4 = new Card("spades", "10")
   dealer.board = [boardCard, boardCard1, boardCard2, boardCard3, boardCard4]
-  bobCard = new Card("spades", "10")
-  bobCard1 = new Card("diamonds", "A")
+  bobCard = new Card("spades", "A")
+  bobCard1 = new Card("diamonds", "5")
   bob.hand = [bobCard, bobCard1]
-  tomCard = new Card("hearts", "10")
-  tomCard1 = new Card("spades", "Q")
+  tomCard = new Card("hearts", "A")
+  tomCard1 = new Card("spades", "7")
   tom.hand = [tomCard, tomCard1]
-  susyCard = new Card("spades", "4")
-  susyCard1 = new Card("hearts", "5")
+  susyCard = new Card("spades", "3")
+  susyCard1 = new Card("hearts", "7")
   susy.hand = [susyCard, susyCard1]
   // dealer.dealFlop()
   // dealer.dealTurn()
@@ -29,6 +29,9 @@ $(document).ready(function(){
   bobDecider = new Decider(bob, dealer.board)
   tomDecider = new Decider(tom, dealer.board)
   susyDecider = new Decider(susy, dealer.board)
+  console.log(bobDecider.handType)
+  console.log(tomDecider.handType)
+  console.log(susyDecider.handType)
   winner = new TieBreaker([bobDecider, tomDecider, susyDecider])
 
   // hand = [testCard, testCard1, testCard2, testCard3, testCard4, testCard5, testCard6, testCard7]

@@ -205,11 +205,9 @@ Decider.prototype = {
       return 0
     }
     kickers = this.sortDescHand(hand)
-    console.log(kickers)
     kickers = _.map(kickers, function(card){ return card.rankValue().toString() })
     kickerString = kickers.join("")
     score = parseInt(kickerString)
-    console.log(score)
     return score
   }
 }
