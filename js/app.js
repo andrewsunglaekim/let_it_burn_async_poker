@@ -44,18 +44,4 @@ $(document).ready(function(){
   console.log(eddyDecider.handType, _.map(eddyDecider.hand, function(card){ return card.rank}),  _.map(eddy.hand, function(card){ return card.rank}))
   winner = new TieBreaker([bobDecider, tomDecider, susyDecider, eddyDecider])
   console.log(winner.winners)
-  // hand = [testCard, testCard1, testCard2, testCard3, testCard4, testCard5, testCard6, testCard7]
-
-
-
-  // decider = new Decider(dealer)
-  // var something = true
-  // while(something == true){
-  //   [1,2,3].forEach(function(num){
-  //     if (num == 2){
-  //       break
-  //     }
-  //     console.log(num)
-  //   })
-  // }
 })
