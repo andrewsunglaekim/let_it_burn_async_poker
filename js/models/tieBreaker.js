@@ -3,8 +3,8 @@ var TieBreaker = function(deciders){
   this.judge = new Decider()
   this.deciders = deciders
   this.removeLesserHands()
-  this.winners = []
   this.firstCase = this.deciders[0]
+  this.getWinner()
 }
 
 TieBreaker.prototype = {
@@ -18,11 +18,12 @@ TieBreaker.prototype = {
   },
   getWinner: function(){
     if(this.deciders.length == 1){
-      this.winners = this.firstCase
-      return [this.deciders[0]]
+      this.winners = [this.firstCase]
+      return this.firstCase
     } else {
       this.winners = this.breakTie(this.deciders[0].handType)
     }
+    return this.winners
   },
   breakTie: function(handType){
     if(handType == "straight flush"){ return this.breakHighHand(this.deciders) }
@@ -30,9 +31,9 @@ TieBreaker.prototype = {
     else if(handType == "full house") { return this.breakFullHouse() }
     else if(handType == "flush") { return this.breakHighHand(this.deciders) }
     else if(handType == "straight") { return this.breakHighHand(this.deciders) }
-    else if(handType == "trips") { return this.breakTrips(this.deciders) }
-    else if(handType == "two pair") { return this.breakTwoPair(this.deciders) }
-    else if(handType == "pair") { return this.breakPair(this.deciders) }
+    else if(handType == "trips") { return this.breakTrips() }
+    else if(handType == "two pair") { return this.breakTwoPair() }
+    else if(handType == "pair") { return this.breakPair() }
     else if(handType == "high card") { return this.breakHighHand(this.deciders) }
   },
   breakHighHand: function(deciders){
@@ -87,7 +88,6 @@ TieBreaker.prototype = {
       return decider.bestHand.trips[0].rankValue() == highestTrip
     })
     _.each(sameOfHighest, function(decider){
-      console.log(decider)
       decider.bestHand.kickers = decider.bestHand.kickers.slice(-2)
     })
     return this.breakHighHand(sameOfHighest)
